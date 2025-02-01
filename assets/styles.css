@@ -1,0 +1,27 @@
+[data-testid="stHeader"] {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+[data-testid="stSidebarContent"]{
+  border-right: 1px solid black;
+}
+
+.lottie-container {
+  background-color: transparent;
+}
+
+p{
+    color: black;
+}
+
+[data-testid="stAppViewBlockContainer"]{
+  background-color: #F0F0F0;
+}
+
+div[data-testid="stDialog"] div[role="dialog"] {
+  width: 70%;
+}
+
+/* div[data-baseweb="progress-bar"] > div > div > div{
+  background-color: ;
+} */
