@@ -4,7 +4,49 @@ from sklearn.model_selection import train_test_split
 import joblib
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score
 from imblearn.over_sampling import SMOTE
+from sklearn.ensemble import RandomForestClassifier
 
+def evaluate_data_without_balancing():
+    df = pd.read_csv(os.path.join('dataset', 'cs-training.csv'))
+
+    df.drop('Unnamed: 0', axis=1, inplace=True)
+
+    df['MonthlyIncome'] = df['MonthlyIncome'].fillna(df['MonthlyIncome'].median())
+    df['NumberOfDependents'] = df['NumberOfDependents'].fillna(df['NumberOfDependents'].mode()[0])
+    df = df[df['RevolvingUtilizationOfUnsecuredLines'] <= 10]
+
+    X = df.drop('SeriousDlqin2yrs', axis=1)
+    y = df['SeriousDlqin2yrs']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=32)
+    
+    rf = RandomForestClassifier(
+        n_estimators=100,
+        max_depth=10,
+        min_samples_split=2,
+        min_samples_leaf=1,
+        max_features='sqrt',
+        random_state=32,
+        n_jobs=-1
+    )
+
+    rf.fit(X_train, y_train)
+    
+    y_pred = rf.predict(X_test)
+    y_pred_proba = rf.predict_proba(X_test)[:, 1]
+
+    # evaluate
+    print('Model Before Resampling')
+    print("Confusion Matrix:")
+    print(confusion_matrix(y_test, y_pred))
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred))
+    print("\nAccuracy Score:")
+    print(accuracy_score(y_test, y_pred))
+    print("\nROC AUC Score:")
+    print(roc_auc_score(y_test, y_pred_proba))
+
+    return
 
 def preprocess_data(df, output_path='dataset/cleaned_data.csv'):
     # P.1.1 Drop Index Column
@@ -40,6 +82,9 @@ def preprocess_data(df, output_path='dataset/cleaned_data.csv'):
     return X_resampled, y_resampled
 
 def main():
+
+    evaluate_data_without_balancing()
+
     df = pd.read_csv(os.path.join('dataset', 'cs-training.csv'))
 
     X, y = preprocess_data(df)

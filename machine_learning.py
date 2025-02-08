@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 from sklearn.model_selection import train_test_split, learning_curve, GridSearchCV, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score, precision_recall_curve
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score
 from imblearn.over_sampling import SMOTE
 import joblib
 import json
@@ -200,18 +200,18 @@ def main():
     # P.1.7 Train Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=32)
 
-    # # P.2.1 - P.2.3
+    # P.2.1 - P.2.3
     start_time_train = time.time()
     model = train_model(X_train, y_train)
     train_duration = time.time() - start_time_train
     print(f"Training model selesai dalam {train_duration:.2f} detik.")
     # save_model_before_tune(model)
     
-    # # Prediksi pada data uji tanpa tuning
+    # Prediksi pada data uji tanpa tuning
     y_pred = model.predict(X_test)
     y_pred_proba = model.predict_proba(X_test)[:, 1]
 
-    # # P.2.4 Evaluate RF Model Without tuning
+    # P.2.4 Evaluate RF Model Without tuning
     print("Confusion Matrix:")
     print(confusion_matrix(y_test, y_pred))
     print("\nClassification Report:")
